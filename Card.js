@@ -1,13 +1,12 @@
-// KLASA KANBAN CARD
+//CREATING CARDS//
 function Card(id, name) {
 	var self = this;
-	
 	this.id = id;
 	this.name = name;
 	this.element = createCard();
 
 	function createCard() {
-		var card = $('<li class="card"></li>');
+		var card = $('<li class="card" id="'+ self.id +'"></li>');
 		var cardDeleteBtn = $('<button class="btn-delete">x</button>');
 		var cardDescription = $('<p class="card-description"></p>');
 		

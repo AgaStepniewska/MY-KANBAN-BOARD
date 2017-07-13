@@ -8,38 +8,45 @@ var board = {
 };
 
 $('.create-column').click(function(){
-		var columnName = prompt('Enter a column name');
-		$.ajax({
-    		url: baseUrl + '/column',
-    		method: 'POST',
-    		data: {
-            	name: columnName
-    		},
-    		success: function(response){
-    			var column = new Column(response.id, columnName);
-    			board.createColumn(column);
-          	}
-        });
+  var columnName = prompt('Enter a column name');
+  $.ajax({
+    url: baseUrl + '/column',
+    method: 'POST',
+    data: {
+      name: columnName
+    },
+    success: function(response){
+      var column = new Column(response.id, columnName);
+      board.createColumn(column);
+    }
+  });
 });
-	
+
+//MOVING AND SORTING CARDS//
 function initSortable() {
-    var self = this;
-    $('.column-card-list').sortable({
-      connectWith: '.column-card-list',
-      placeholder: 'card-placeholder'
+  $('.column-card-list').sortable({ 
+    connectWith: '.column-card-list',
+    placeholder: 'card-placeholder',
+    stop: function( event, ui ) {
+      var card = ui.item[0];
+      var cardId = card.id;
+      var cardText = card.innerText.substring(1, card.innerText.lenght);
+      var columnId = card.offsetParent.id;
       
-    }).disableSelection();
- /* Nie wiem jak to ustawić.... i nie działa, jaki będzie response?
-      $.ajax({
-        url: baseUrl + '/card/' + self.id,
-        method: 'PUT',
-        data: {
-          name: cardName
-          bootcamp_kanban_column_id: self.id
-        },
-        success: function(event, id) {
-          alert("["+ self.id + ") received ["+ id.item.html() + "]");
-        }
-       
-    }); */
-  }
+      moveCard(cardId, columnId, cardText);
+    }
+  }).disableSelection();     
+}
+function moveCard(id, columnId, cardName) {
+  $.ajax({
+    url: baseUrl + '/card/' + id,
+    method: 'PUT',
+    data: {
+      name: cardName,
+      bootcamp_kanban_column_id: columnId
+    },
+    success: function() {
+      console.log('ready');
+    }
+  });
+}
